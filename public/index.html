@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced File Sharing</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1><i class="fas fa-share-alt"></i> Enhanced File Sharing</h1>
+            <p>Upload and share files with customizable expiry settings</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tab-navigation">
+            <button class="tab-btn active" data-tab="upload">
+                <i class="fas fa-upload"></i> Upload
+            </button>
+            <button class="tab-btn" data-tab="retrieve">
+                <i class="fas fa-download"></i> Retrieve
+            </button>
+        </nav>
+
+        <!-- Upload Section -->
+        <section id="upload-section" class="tab-content active">
+            <div class="section-card">
+                <h2>Upload File or Text</h2>
+                
+                <!-- Upload Type Selection -->
+                <div class="upload-type-selector">
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="uploadType" value="file" checked>
+                            <span class="radio-custom"></span>
+                            <div class="radio-content">
+                                <strong>Upload File</strong>
+                                <small>Upload any file with no size limit</small>
+                            </div>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="uploadType" value="text">
+                            <span class="radio-custom"></span>
+                            <div class="radio-content">
+                                <strong>Upload Text</strong>
+                                <small>Create a text file from typed content</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- File Upload Mode -->
+                <div id="file-upload-mode" class="upload-mode">
+                    <div class="form-group">
+                        <label class="form-label">Custom Filename (optional)</label>
+                        <input type="text" id="file-filename" class="form-control" placeholder="Leave empty to use original filename">
+                    </div>
+                    
+                    <div class="file-drop-zone" id="file-drop-zone">
+                        <div class="drop-zone-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop files here or <span class="link-text">browse</span></p>
+                            <small>No size limit - upload any file</small>
+                        </div>
+                        <input type="file" id="file-input" class="file-input" accept="*/*">
+                    </div>
+                    
+                    <div id="file-preview" class="file-preview hidden">
+                        <div class="file-info">
+                            <i class="fas fa-file"></i>
+                            <div>
+                                <div class="filename"></div>
+                                <div class="filesize"></div>
+                            </div>
+                            <button type="button" class="btn-remove" onclick="clearFileSelection()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Upload Mode -->
+                <div id="text-upload-mode" class="upload-mode hidden">
+                    <div class="form-group">
+                        <label class="form-label">Filename</label>
+                        <input type="text" id="text-filename" class="form-control" placeholder="Enter filename (without extension)" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Text Content</label>
+                        <textarea id="text-content" class="form-control text-area" placeholder="Enter your text content here..." rows="10"></textarea>
+                        <div class="character-counter">
+                            <span id="char-count">0</span> / <span id="char-limit">1,000,000</span> characters
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expiry Selection -->
+                <div class="form-group">
+                    <label class="form-label">Expiry Duration</label>
+                    <select id="expiry-duration" class="form-control">
+                        <option value="600000">10 Minutes</option>
+                        <option value="3600000" selected>1 Hour</option>
+                        <option value="86400000">1 Day</option>
+                    </select>
+                </div>
+
+                <!-- Upload Button -->
+                <button id="upload-btn" class="btn btn--primary btn--full-width">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+            </div>
+        </section>
+
+        <!-- Retrieve Section -->
+        <section id="retrieve-section" class="tab-content">
+            <div class="section-card">
+                <h2>Retrieve File</h2>
+                
+                <!-- Search Form -->
+                <div class="search-section">
+                    <div class="form-group">
+                        <label class="form-label">Filename</label>
+                        <div class="search-input-group">
+                            <input type="text" id="search-filename" class="form-control" placeholder="Enter filename to search">
+                            <button id="search-btn" class="btn btn--primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="search-loading" class="loading-state hidden">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Searching...</span>
+                </div>
+
+                <!-- File Found -->
+                <div id="file-found" class="file-result hidden">
+                    <h3>File Found</h3>
+                    <div class="file-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Name:</span>
+                            <span id="found-filename" class="filename-display"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Size:</span>
+                            <span id="found-filesize"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Type:</span>
+                            <span id="found-filetype"></span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Expires:</span>
+                            <span id="found-expiry"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="view-btn" class="btn btn--secondary">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button id="download-btn" class="btn btn--primary">
+                            <i class="fas fa-download"></i> <span class="download-text">Download</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- File Not Found -->
+                <div id="file-not-found" class="error-message hidden">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>File not found or expired</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- File Viewer Modal -->
+        <div id="file-viewer" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="viewer-title">File Preview</h3>
+                    <button class="modal-close" onclick="closeViewer()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="viewer-content"></div>
+                </div>
+            </div>
+            <div class="modal-backdrop" onclick="closeViewer()"></div>
+        </div>
+
+        <!-- Toast Messages -->
+        <div id="toast-container" class="toast-container"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
