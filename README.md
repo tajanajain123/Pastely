@@ -192,10 +192,4 @@ The server automatically:
 3. **Frontend integration**:
    - Update `API_BASE` in frontend to your deployed URL
 
-## 📝 License
 
-MIT License - feel free to use and modify.
-
----
-
-**⚠️ Security Note**: Always change your MongoDB password and never share credentials publicly!
