@@ -34,16 +34,6 @@ Secure file sharing backend with MongoDB storage, file uploads, text sharing, an
    npm start
    ```
 
-## 🔧 Configuration
-
-### Environment Variables (.env)
-
-```env
-MONGODB_URI=mongodb+srv://user_18:YOUR_PASSWORD@cluster0.1pcby.mongodb.net/fileSharing
-PORT=3000
-NODE_ENV=development
-```
-
 ### MongoDB Setup
 
 1. **Change your MongoDB password** immediately in Atlas dashboard
@@ -127,7 +117,6 @@ DELETE /api/cleanup
 - **CORS protection**
 - **Environment variables** for sensitive data
 
-## 🛠️ Development
 
 ### File Structure
 ```
@@ -140,56 +129,5 @@ backend/
 └── README.md          # This file
 ```
 
-### Adding to Frontend
-
-Update your frontend to use these API endpoints:
-
-```javascript
-const API_BASE = 'http://localhost:3000/api';
-
-// Upload file
-const formData = new FormData();
-formData.append('file', file);
-formData.append('filename', filename);
-formData.append('expiry', '60');
-
-fetch(`${API_BASE}/upload`, {
-    method: 'POST',
-    body: formData
-});
-
-// Retrieve file
-fetch(`${API_BASE}/retrieve/${filename}`)
-    .then(res => res.json());
-```
-
-## 🔄 Automatic Cleanup
-
-The server automatically:
-- Cleans expired files every hour
-- Removes expired files when accessed
-- Uses MongoDB TTL indexes for efficiency
-
-## 📊 Monitoring
-
-- Check server logs for upload/download activity
-- Use `/api/health` for health checks
-- Monitor MongoDB for storage usage
-
-## 🚀 Deployment
-
-### Production Setup
-
-1. **Update environment variables**:
-   - Set `NODE_ENV=production`
-   - Use strong `JWT_SECRET`
-   - Configure proper `CORS_ORIGIN`
-
-2. **Deploy to cloud**:
-   - Heroku, AWS, DigitalOcean, etc.
-   - Ensure MongoDB connection string is updated
-
-3. **Frontend integration**:
-   - Update `API_BASE` in frontend to your deployed URL
 
 
