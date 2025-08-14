@@ -1,5 +1,20 @@
 const mongoose = require('mongoose');
 
+// optional: quiet deprecation warnings
+mongoose.set('strictQuery', true);
+
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 8000,  // faster fail if network/DNS is bad
+  connectTimeoutMS: 8000,
+  family: 4                        // prefer IPv4; avoids some IPv6 ISP issues
+}).then(() => {
+  console.log('✅ Connected to MongoDB');
+}).catch(err => {
+  console.error('❌ MongoDB connection error:', err?.message || err);
+  process.exitCode = 1; // do not crash server; keep API up if you prefer
+});
+
+
 const fileSchema = new mongoose.Schema({
     filename: {
         type: String,

@@ -1471,3 +1471,32 @@ select.form-control {
     min-width: auto;
   }
 }
+/*preview button*/
+#copy-preview-btn {
+    background-color: #ff7b00; 
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#copy-preview-btn:hover {
+    background-color: #e06f00; /* darker on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+#copy-preview-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#copy-preview-btn:focus {
+    outline: 2px solid #ff7b00;
+    outline-offset: 2px;
+}

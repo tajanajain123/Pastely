@@ -258,7 +258,7 @@ class FileShareApp {
             });
             const result = await res.json();
             if (!res.ok) throw new Error(result.error || 'Upload failed');
-            this.showToast(`Text "${filename}" uploaded to MongoDB!`, 'success');
+            this.showToast(`Success "${filename}"`, 'success');
             this.resetTextUpload();
         } catch (error) {
             this.showToast('Upload failed: ' + error.message, 'error');
@@ -432,32 +432,73 @@ class FileShareApp {
 
     // AJAX preview and download via backend API
     async viewFile() {
-        if (!this.currentSearchResult) return;
-        const filename = this.currentSearchResult.filename;
-        // Request preview content from backend
-        try {
-            const res = await fetch(`/api/view/${encodeURIComponent(filename)}`);
-            const data = await res.json();
-            const viewerTitle = document.getElementById('viewer-title');
-            const viewerContent = document.getElementById('viewer-content');
-            const modal = document.getElementById('file-viewer');
-            if (!viewerTitle || !viewerContent || !modal) return;
+    if (!this.currentSearchResult) return;
+    const filename = this.currentSearchResult.filename;
 
-            viewerTitle.textContent = `Preview: ${filename}`;
-            // Support text or image preview
-            if (data && data.type === 'image') {
-                viewerContent.innerHTML = `<img src="${data.content}" alt="${filename}">`;
-            } else if (data && data.content) {
-                viewerContent.innerHTML = `<pre>${this.escapeHtml(data.content)}</pre>`;
-            } else {
-                viewerContent.innerHTML = `<div class="file-info-display" style="text-align: center; padding: 2rem;">Preview not supported for this file type. Please download.</div>`;
-            }
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-        } catch (error) {
-            this.showToast('Preview failed: ' + error.message, 'error');
+    try {
+        const res = await fetch(`/api/view/${encodeURIComponent(filename)}`);
+        const data = await res.json();
+
+        const viewerTitle = document.getElementById('viewer-title');
+        const viewerContent = document.getElementById('viewer-content');
+        const modal = document.getElementById('file-viewer');
+        if (!viewerTitle || !viewerContent || !modal) return;
+
+        viewerTitle.textContent = `Preview: ${filename}`;
+
+        // Support text or image preview
+        if (data && data.type === 'image') {
+            viewerContent.innerHTML = `<img src="${data.content}" alt="${filename}">`;
+        } 
+        else if (data && data.content) {
+            // Add Copy button UI
+            viewerContent.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <strong>Preview Content</strong>
+                    <button id="copy-preview-btn" style="padding: 4px 8px; font-size: 0.9rem; cursor: pointer;">Copy</button>
+                </div>
+                <pre id="preview-text" style="white-space: pre-wrap;">${this.escapeHtml(data.content)}</pre>
+            `;
+
+            // Attach click listener for Copy button
+            document.getElementById('copy-preview-btn').addEventListener('click', async () => {
+                const text = document.getElementById('preview-text').innerText;
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(text);
+                    } else {
+                        // Fallback for insecure context/older browsers
+                        const tempArea = document.createElement('textarea');
+                        tempArea.value = text;
+                        tempArea.style.position = 'fixed';
+                        tempArea.style.opacity = '0';
+                        document.body.appendChild(tempArea);
+                        tempArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(tempArea);
+                    }
+                    this.showToast('Copied to clipboard!', 'success');
+                } catch (err) {
+                    this.showToast('Copy failed!', 'error');
+                }
+            });
+        } 
+        else {
+            viewerContent.innerHTML = `
+                <div class="file-info-display" style="text-align: center; padding: 2rem;">
+                    Preview not supported for this file type. Please download.
+                </div>
+            `;
         }
+
+        // Show modal
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+
+    } catch (error) {
+        this.showToast('Preview failed: ' + error.message, 'error');
     }
+}
 
     async downloadFile() {
         if (!this.currentSearchResult) return;

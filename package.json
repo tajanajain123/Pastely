@@ -19,16 +19,25 @@
   "author": "File Sharing App",
   "license": "MIT",
   "dependencies": {
-    "express": "^5.1.0",
-    "mongoose": "^8.17.1",
-    "multer": "^2.0.2",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
-    "cors": "^2.8.5"
+    "express": "^5.1.0",
+    "mongodb": "^6.18.0",
+    "mongoose": "^8.17.1",
+    "multer": "^2.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tajanajain123/Pastely.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tajanajain123/Pastely/issues"
+  },
+  "homepage": "https://github.com/tajanajain123/Pastely#readme"
 }
